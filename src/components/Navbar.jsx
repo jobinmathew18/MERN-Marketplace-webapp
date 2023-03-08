@@ -3,6 +3,7 @@ import { Search } from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import {mobile} from '../responsive'
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
     height: 60px;
@@ -92,7 +93,9 @@ const Navbar = () => {
             </SearchContainer>
         </Left>
         <Center>
+          <Link to={'/'} style={{color:"black", textDecoration:"none"}}>
             <Logo>Marketplace</Logo>
+          </Link>  
         </Center>
         <Right>
             <MenuItem>REGISTER</MenuItem>
