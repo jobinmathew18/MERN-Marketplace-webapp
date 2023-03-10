@@ -1,11 +1,13 @@
 import { Add, Remove } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
+import { addProduct } from "../redux/cartRedux";
 import { publicRequest } from "../requestMethods";
 import { mobile } from "../responsive";
 
@@ -123,6 +125,7 @@ const Button = styled.button`
 
 const Product = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1)
@@ -150,9 +153,9 @@ const Product = () => {
     }
   }
 
-  //update cart
+  //update/add item to cart
   const handleClick = ()=>{
-
+    dispatch(addProduct({...product, quantity, color, size}));
   }
 
   return (
@@ -180,7 +183,7 @@ const Product = () => {
               <FilterSize onChange={(e)=>setSize(e.target.value)}>
               {
                 product.size?.map((size) => {
-                  return <FilterSizeOption>{size}</FilterSizeOption>
+                  return <FilterSizeOption key={size}>{size}</FilterSizeOption>
                 })}
               </FilterSize>
             </Filter>
