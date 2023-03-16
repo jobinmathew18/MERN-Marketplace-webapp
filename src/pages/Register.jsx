@@ -1,5 +1,8 @@
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import {mobile} from '../responsive'
+import { publicRequest } from "../requestMethods";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
   width: 100vw;
@@ -14,14 +17,14 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${mobile({background: "#F7F1E5"})}
+  ${mobile({ background: "#F7F1E5" })}
 `;
 
 const Wrapper = styled.div`
   width: 40%;
   padding: 20px;
   background-color: white;
-  ${mobile({width:"90%"})}
+  ${mobile({ width: "90%" })}
 `;
 
 const Form = styled.div`
@@ -57,6 +60,29 @@ const Button = styled.button`
 `;
 
 const Register = () => {
+  const navigate = useNavigate()
+  const username = useRef();
+  const email = useRef();
+  const password = useRef();
+  const confirmPassword = useRef();
+
+  const handleRegister = async () => {
+    try {
+      if (password.current.value === confirmPassword.current.value) {
+         await publicRequest.post("/auth/register", {
+          username: username.current.value,
+          email: email.current.value,
+          password: password.current.value,
+        });
+        navigate('/')
+      }else{
+        console.log("password doesn't match")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -64,15 +90,17 @@ const Register = () => {
         <Form>
           <Input placeholder="First name" />
           <Input placeholder="Last name" />
-          <Input placeholder="Usrname" />
-          <Input placeholder="Email" />
-          <Input placeholder="Password" />
-          <Input placeholder="Confirm Password" />
+          <Input placeholder="Usrname" ref={username} />
+          <Input placeholder="Email" ref={email} />
+          <Input placeholder="Password" ref={password} />
+          <Input placeholder="Confirm Password" ref={confirmPassword} />
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button onClick={handleRegister} type="submit">
+            CREATE
+          </Button>
         </Form>
       </Wrapper>
     </Container>

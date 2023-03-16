@@ -26,15 +26,15 @@ function App() {
   if ((JSON.parse(localStorage.getItem("persist:root")))) {
     if (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser) {
       user = !JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.isAdmin
-    } 
+    }
   }
 
-  console.log("user is: " + user)  
- 
+  console.log("user is: " + user) 
+
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={user ? <Home /> : <Navigate to="/login" replace={true}/> } />
+        <Route exact path="/" element={user ? <Home /> : <Navigate to="/login" replace={true} />} />
         <Route exact path="/register" element={user ? <Navigate to="/" replace={true} /> : <Register />} />
         <Route exact path="/login" element={user ? <Navigate to="/" replace={true} /> : <Login />} />
         <Route exact path="/products/:category" element={<ProductList />} />
