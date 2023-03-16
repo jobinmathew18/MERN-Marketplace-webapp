@@ -155,6 +155,7 @@ const Product = () => {
 
   //update/add item to cart
   const handleClick = ()=>{
+    console.log({...product, quantity, color, size})
     dispatch(addProduct({...product, quantity, color, size}));
   }
 

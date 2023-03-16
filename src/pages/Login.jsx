@@ -1,5 +1,8 @@
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {mobile} from '../responsive'
+import { mobile } from "../responsive";
+import { login } from "../redux/apiCalls";
 
 const Container = styled.div`
   width: 100vw;
@@ -13,16 +16,15 @@ const Container = styled.div`
   background-size: cover;
   display: flex;
   align-items: center;
-  justify-content: center; 
-  ${mobile({background: "#F7F1E5"})}
-
+  justify-content: center;
+  ${mobile({ background: "#F7F1E5" })}
 `;
 
 const Wrapper = styled.div`
   width: 35%;
   padding: 20px;
   background-color: white;
-  ${mobile({width:"75%"})}
+  ${mobile({ width: "75%" })}
 `;
 
 const Form = styled.div`
@@ -40,21 +42,21 @@ const Input = styled.input`
   min-width: 40%;
   margin: 20px 10px 0 0;
   padding: 10px;
-  outline: none  ;
+  outline: none;
 `;
 
 const Link = styled.a`
-    font-weight: 300;
-    font-size: 13px;
-    margin-bottom: 8px;
-    color: black;
-    text-decoration: none;
-    width: fit-content;
+  font-weight: 300;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: black;
+  text-decoration: none;
+  width: fit-content;
 
-    &:hover{
-        text-decoration: underline;
-    }
-`
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 const Button = styled.button`
   width: 25%;
@@ -65,23 +67,54 @@ const Button = styled.button`
   cursor: pointer;
   font-weight: 500;
   margin-block: 10px 16px;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: green;
+  }
 `;
 
+const Error = styled.span`
+  color: red;
+  margin-block: 5px;
+`
+
 const Login = () => {
+  const username = useRef();
+  const password = useRef();
+  const dispatch = useDispatch();
+  const { isFetching, error } = useSelector((state) => state.user); 
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(dispatch, {
+      username: username.current.value,
+      password: password.current.value,  
+    });
+  };
+
   return (
     <Container>
-        <Wrapper>
-            <Title>SIGN IN</Title>
-            <Form>
-                <Input placeholder="username"/>
-                <Input placeholder="password"/>
-                <Button>LOGIN</Button>
-                <Link href="/">FORGOT PASSWORD?</Link>
-                <Link href="/register">CREATE A NEW ACCOUNT</Link>
-            </Form>
-        </Wrapper>
+      <Wrapper>
+        <Title>SIGN IN</Title>
+        <Form>
+          <Input placeholder="username" name="username" ref={username} />
+          <Input
+            placeholder="password"
+            type="password"
+            name="password"
+            ref={password}
+          />
+          <Button onClick={handleSubmit} disabled={isFetching}>
+            LOGIN
+          </Button>
+          {error && <Error>Invalid credentials</Error>}
+          <Link href="/">FORGOT PASSWORD?</Link>
+          <Link href="/register">CREATE A NEW ACCOUNT</Link>
+        </Form>
+      </Wrapper>
     </Container>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

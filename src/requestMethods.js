@@ -1,7 +1,17 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:5000/api/"
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MDM4M2RlNjM2OTA3NGY3ZmFmY2RmZSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY3ODIwMDIzMSwiZXhwIjoxNjc4NDU5NDMxfQ.oFxHVl-slSNL1ilWbpuLJRuWS1P4pyA7SgrZhNbZbzU"
+
+//getting token stored in local storage
+
+let TOKEN = null
+if ((JSON.parse(localStorage.getItem("persist:root")))) {
+    if (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser) {
+        TOKEN = JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken
+    }
+}
+
+console.log("token is "+TOKEN)
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL
@@ -9,5 +19,5 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
     baseURL: BASE_URL,
-    header:{token: `Bearer ${TOKEN}`}  
+    header: { token: `Bearer ${TOKEN}` }
 }) 
