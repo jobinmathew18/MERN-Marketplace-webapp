@@ -33,7 +33,7 @@ const cartSlice = createSlice({
             state.quantity -= 1
         },
         updateItem: (state, action) => {
-            console.log(action.payload)
+            // console.log(action.payload)
             if (action.payload.condition === 'inc') {
                 state.products.forEach((item, ind) => {
                     if (item.productId === action.payload.productId) {

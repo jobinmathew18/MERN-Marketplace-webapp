@@ -132,8 +132,15 @@ const RemoveItem = styled.button`
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #ece5e5;
+  background-color: #f55656;
   font-weight: 500;
+  color: white;
+  border: none;
+  transition: 0.2s;
+
+  &:hover{
+    background-color: #dd2b2b;
+  }
 `
 
 const Hr = styled.hr`
