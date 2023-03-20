@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { login } from "../redux/apiCalls";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -79,12 +80,16 @@ const Error = styled.span`
   margin-block: 5px;
 `
 
-const Login = () => {
+const Login = () => { 
   const username = useRef();
   const password = useRef();
   const dispatch = useDispatch();
   const { isFetching, error } = useSelector((state) => state.user); 
+  const navigate = useNavigate()
+  const user = useSelector(state=> state.user.currentUser)
 
+  user && navigate('/') 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     login(dispatch, {
@@ -109,7 +114,7 @@ const Login = () => {
             LOGIN
           </Button>
           {error && <Error>Invalid credentials</Error>}
-          <Link href="/">FORGOT PASSWORD?</Link>
+          <Link href="#">FORGOT PASSWORD?</Link>
           <Link href="/register">CREATE A NEW ACCOUNT</Link>
         </Form>
       </Wrapper>

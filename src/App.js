@@ -12,7 +12,7 @@ import {
   Route,
   Navigate
 } from "react-router-dom"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AdminHome from './admin/pages/adminHome/AdminHome';
 import UserList from './admin/pages/userList/UserList';
 import User from './admin/pages/user/User';
@@ -20,21 +20,39 @@ import NewUser from './admin/pages/newUser/NewUser';
 import AdminProduct from './admin/pages/adminProduct/AdminProduct';
 import AdminProductList from './admin/pages/adminProductList/AdminProductList';
 import NewProduct from './admin/pages/newProduct/NewProduct';
+import { useEffect } from 'react';
+import { existingProduct } from './redux/cartRedux';
+import { userRequest } from './requestMethods';
 
 function App() {
-  let user = null
-  if ((JSON.parse(localStorage.getItem("persist:root")))) {
-    if (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser) {
-      user = !JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.isAdmin
+  const dispatch = useDispatch()
+  let user = useSelector(state=> state.user.currentUser) 
+  const id = useSelector(state=> state.user.currentUser?._id)
+
+  let admin = null
+  if(user){
+    admin = user.isAdmin
+    user = !user.isAdmin
+  } 
+
+  console.log("user is: " + user)
+  console.log("admin is: "+ admin)
+
+  useEffect(()=>{
+    console.log("first")
+    const getCartItems = async ()=>{
+      console.log("second")
+      const res =  await userRequest.get(`/carts/find/${id}`)
+      // console.log(res.data) 
+      dispatch(existingProduct(res.data))  
     }
-  }
-
-  console.log("user is: " + user) 
-
-  return (
+    id && user && getCartItems()
+  }, [id, user]) 
+ 
+  return ( 
     <Router>
       <Routes>
-        <Route exact path="/" element={user ? <Home /> : <Navigate to="/login" replace={true} />} />
+        <Route exact path="/" element={ <Home /> } />
         <Route exact path="/register" element={user ? <Navigate to="/" replace={true} /> : <Register />} />
         <Route exact path="/login" element={user ? <Navigate to="/" replace={true} /> : <Login />} />
         <Route exact path="/products/:category" element={<ProductList />} />
@@ -43,13 +61,19 @@ function App() {
         <Route exact path="/success" element={<Success />} />
 
         {/* ADMIN */}
-        <Route exact path="/admin" element={<AdminHome />}></Route>
-        <Route exact path="/admin/users" element={<UserList />}></Route>
-        <Route exact path="/admin/user/:userId" element={<User />}></Route>
-        <Route exact path="/admin/newUser" element={<NewUser />}></Route>
-        <Route exact path="/admin/products" element={<AdminProductList />}></Route>
-        <Route exact path="/admin/product/:productId" element={<AdminProduct />}></Route>
-        <Route exact path="/admin/newProduct" element={<NewProduct />}></Route>
+        {
+          admin &&
+          <>
+          <Route exact path="/admin" element={<AdminHome />}></Route>
+          <Route exact path="/admin/users" element={<UserList />}></Route>
+          <Route exact path="/admin/user/:userId" element={<User />}></Route>
+          <Route exact path="/admin/newUser" element={<NewUser />}></Route>
+          <Route exact path="/admin/products" element={<AdminProductList />}></Route>
+          <Route exact path="/admin/product/:productId" element={<AdminProduct />}></Route>
+          <Route exact path="/admin/newProduct" element={<NewProduct />}></Route>
+          </>
+        }
+
       </Routes>
     </Router>
   );

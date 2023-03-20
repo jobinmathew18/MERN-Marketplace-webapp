@@ -3,15 +3,13 @@ import axios from "axios";
 const BASE_URL = "http://localhost:5000/api/"
 
 //getting token stored in local storage
-
 let TOKEN = null
-if ((JSON.parse(localStorage.getItem("persist:root")))) {
-    if (JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser) {
-        TOKEN = JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken
-    }
+if ((JSON.parse(localStorage.getItem("user")))) {
+    TOKEN = JSON.parse(localStorage.getItem("user")).accessToken 
 }
 
-console.log("token is "+TOKEN)
+
+// console.log("token is "+TOKEN)
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL

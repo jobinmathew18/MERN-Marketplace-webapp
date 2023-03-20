@@ -1,5 +1,5 @@
 import { Add, Remove } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
@@ -9,6 +9,8 @@ import StripeCheckout from 'react-stripe-checkout'
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom"; 
+import { deleteItem } from "../redux/cartRedux";
+import { updatecart } from "../redux/apiCalls";
 
 const KEY = process.env.REACT_APP_STRIPE;   
 
@@ -76,6 +78,9 @@ const ProductDetail = styled.div`
 
 const Image = styled.img`
   width: 200px;
+  height: 200px;
+  object-fit: contain;
+  padding: 10px;
 `;
 
 const Details = styled.div`
@@ -104,12 +109,12 @@ const PriceDetail = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
 `;
 
 const ProductAmountContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
 `;
 
 const ProductAmount = styled.div`
@@ -122,6 +127,14 @@ const ProductPrice = styled.div`
   font-size: 30px;
   font-weight: 200;
 `;
+
+const RemoveItem = styled.button`
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #ece5e5;
+  font-weight: 500;
+`
 
 const Hr = styled.hr`
   background-color: #eee;
@@ -164,8 +177,12 @@ const Button = styled.button`
   border: none;
 `;
 
+
 const Cart = () => {
+  const dispatch = useDispatch()
   const cartItems = useSelector((state) => state.cart);
+
+
   const [stripeToken, setStripeToken] = useState(null)
   const navigate = useNavigate()
 
@@ -191,12 +208,25 @@ const Cart = () => {
     stripeToken && cartItems.total>=1 && makeRequest();
   }, [stripeToken, cartItems.total, navigate]);
 
+  const handleRemove = async (id)=>{
+    try {
+      await userRequest.put(`/carts/delete/${id}`)
+      dispatch(deleteItem(id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleQuantity = async (info)=>{
+    updatecart(info, dispatch)
+  }
+ 
   return (
     <Container>
       <Announcement />
       <Navbar />
       <Wrapper>
-        <Title>YOUR BAG</Title>
+        <Title>YOUR BAG</Title> 
         <Top>
           <TopButton>CONTINUE SHOPPING</TopButton>
           <TopTexts>
@@ -216,7 +246,7 @@ const Cart = () => {
                       <b>Product:</b> {product.title}
                     </ProductName>
                     <ProductId>
-                      <b>ID:</b> {product._id}
+                      <b>ID:</b> {product.productId}
                     </ProductId>
                     <ProductColor color={product.color} />
                     <ProductSize>
@@ -226,15 +256,17 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
+                    <Add onClick={()=>{handleQuantity({condition: 'inc', productId: product.productId})}}/>
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <Remove onClick={()=>{handleQuantity({condition: 'dec', productId: product.productId})}}/>
                   </ProductAmountContainer>
                   <ProductPrice>
-                    {product.price * product.quantity}
+                    $ {product.price * product.quantity}
                   </ProductPrice>
+                  <RemoveItem onClick={()=>{handleRemove(product.productId)}}>Remove</RemoveItem>
                 </PriceDetail>
               </Product>
+              
             ))}
             <Hr />
           </Info>

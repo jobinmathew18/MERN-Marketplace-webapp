@@ -7,8 +7,9 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
+import { addToCart } from "../redux/apiCalls";
 import { addProduct } from "../redux/cartRedux";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { mobile } from "../responsive";
 
 const Container = styled.div``;
@@ -26,8 +27,8 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 90vh;
-  object-fit: cover;
+  height: 70vh;
+  object-fit: contain;
   ${mobile({ height: "30%" })}
 `;
 
@@ -147,7 +148,7 @@ const Product = () => {
 
   const handleQuantity = (condition)=>{
     if(condition === "dec" && quantity > 1){
-      setQuantity(prev=> prev - 1)
+      setQuantity(prev=> prev - 1) 
     }else if(condition === 'inc'){
       setQuantity(prev=> prev + 1)
     }
@@ -155,8 +156,8 @@ const Product = () => {
 
   //update/add item to cart
   const handleClick = ()=>{
-    console.log({...product, quantity, color, size})
-    dispatch(addProduct({...product, quantity, color, size}));
+    // console.log({...product, quantity, color, size})
+    addToCart({...product, quantity, color, size}, dispatch)
   }
 
   return (
