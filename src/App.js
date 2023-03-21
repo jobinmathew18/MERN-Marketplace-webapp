@@ -71,12 +71,12 @@ function App() {
           <Route exact path="/admin/products" element={<AdminProductList />}></Route>
           <Route exact path="/admin/product/:productId" element={<AdminProduct />}></Route>
           <Route exact path="/admin/newProduct" element={<NewProduct />}></Route>
-          </>
+          </> 
         }
 
       </Routes>
     </Router>
   );
-}
+} 
 
-export default App;
+export default App; 
