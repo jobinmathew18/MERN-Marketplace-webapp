@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { addToCart } from "../redux/apiCalls";
 import { addProduct } from "../redux/cartRedux";
-import { publicRequest, userRequest } from "../requestMethods";
+import { userRequest } from "../requestMethods";
 import { mobile } from "../responsive";
 
 const Container = styled.div``;
@@ -137,7 +137,7 @@ const Product = () => {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const res = await publicRequest.get(`/products/find/${id}`);
+        const res = await userRequest.get(`/products/find/${id}`);
         setProduct(res.data);
       } catch (error) {
         console.log(error);

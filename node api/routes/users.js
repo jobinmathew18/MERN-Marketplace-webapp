@@ -37,6 +37,18 @@ router.get('/find/:id', verifyTokenAndAdmin, async (req, res) => {
     }
 })
 
+
+//GET CURRENT USER
+router.get('/currentuser', verifyToken, async(req,res)=>{
+    // console.log(req.user)
+    try {
+        const currentUser = await User.findById(req.user.id)
+        res.status(200).json(currentUser)
+    } catch (error) {
+        next(error)
+    }
+})
+
 //GET ALL USERS
 router.get('/', verifyTokenAndAdmin, async (req, res) => {
     const query = req.query.new                 //http://localhost:5000/api/users?new=true

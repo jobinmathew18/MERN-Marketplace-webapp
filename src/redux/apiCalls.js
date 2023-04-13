@@ -1,5 +1,5 @@
-import { loginFailure, loginStart, loginSuccess } from "./userRedux";
-import { publicRequest, userRequest } from "../requestMethods";
+import { loginFailure, loginStart, loginSuccess, logoutSuccess } from "./userRedux";
+import { userRequest } from "../requestMethods";
 import { addNewProductFailure, addNewProductStart, addNewProductSuccess, deleteProductFailure, deleteProductStart, deleteProductSuccess, getProductFailure, getProductStart, getProductSuccess, updateProductFailure, updateProductStart, updateProductSuccess } from "./productRedux";
 import { addProduct, updateItem } from "./cartRedux";
 
@@ -7,21 +7,29 @@ export const login = async (dispatch, user)=>{
     // console.log(user)
     dispatch(loginStart());
     try { 
-        const res = await publicRequest.post('/auth/login', user)    
-        localStorage.setItem("user", JSON.stringify(res.data))    
+        const res = await userRequest.post('/auth/login', user)    
         dispatch(loginSuccess(res.data))
     } catch (error) {
         console.log(error)
         dispatch(loginFailure())
     }
-} 
+}  
 
+export const logout = async (dispatch)=>{
+    try {
+        await userRequest.post('/auth/logout')
+        console.log("logout running")
+        dispatch(logoutSuccess())
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export const getProducts = async (dispatch)=>{
     // console.log(user)
     dispatch(getProductStart());
     try { 
-        const res = await publicRequest.get('/products')           
+        const res = await userRequest.get('/products')           
         dispatch(getProductSuccess(res.data))
     } catch (error) {
         console.log(error)

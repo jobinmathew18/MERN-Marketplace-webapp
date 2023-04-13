@@ -1,2 +1,2 @@
 react: cd ui npm start
-backend cd api nodemon index.js
+backend: cd nodeapi nodemon index.js

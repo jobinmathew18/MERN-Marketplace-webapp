@@ -5,7 +5,8 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { mobile } from "../responsive";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/userRedux";
+import { removeCart } from "../redux/cartRedux";
+import { logout } from "../redux/apiCalls";
 
 const Container = styled.div`
   height: 60px;
@@ -81,12 +82,17 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
   const quantity = useSelector((state) => state.cart.quantity);
+  const {currentUser} = useSelector((state) => state.user);
+  const navigate = useNavigate()
+
   // console.log(cart)
   const dispatch = useDispatch()
 
-  const handleLogout = ()=>{
-    localStorage.removeItem("user")
-    dispatch(logout())
+  const handleLogout = (e)=>{
+    e.preventDefault();
+    logout(dispatch);
+    dispatch(removeCart())
+    navigate('/login')
   }
 
   return (
@@ -105,12 +111,8 @@ const Navbar = () => {
           </Link>
         </Center>
         <Right>
-          {localStorage.getItem("user") ? (
-            <Link to='/login'
-              style={{ textDecoration: "none", color: "black" }}
-            >
+          {currentUser ? (
               <MenuItem onClick={handleLogout}>SIGN OUT</MenuItem>
-            </Link>
           ) : (
             <>
               <Link

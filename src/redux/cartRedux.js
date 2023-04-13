@@ -27,6 +27,8 @@ const cartSlice = createSlice({
             state.total = test
         },
         deleteItem: (state, action) => {
+            const item = state.products.find(item=> item.productId === action.payload)
+            state.total -= item.quantity*item.price
             state.products.splice(
                 state.products.findIndex(item => item.productId === action.payload), 1
             )
@@ -49,11 +51,16 @@ const cartSlice = createSlice({
                     }
                 })
             }
+        },
+        removeCart: (state)=>{
+            state.products = []
+            state.quantity = 0
+            state.total = 0
         }
     }
 })
 
 
 
-export const { addProduct, existingProduct, deleteItem, updateItem } = cartSlice.actions
+export const { addProduct, existingProduct, deleteItem, updateItem, removeCart } = cartSlice.actions
 export default cartSlice.reducer

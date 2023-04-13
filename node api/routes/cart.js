@@ -40,10 +40,11 @@ router.put('/update/:id', verifyToken, async (req, res) => {
 })
 
 //DELETE
-router.put('/delete/:id', verifyToken, async (req, res) => {
+router.put('/delete/:id', verifyToken, async (req, res) => {  
     const userId = req.user.id
+    console.log(userId)
     try {
-        const cart = await Cart.updateOne({ userId }, {$pull: {products: {productId: req.params.id}}})
+        const cart = await Cart.updateOne({ userId }, {$pull: {products: {productId: req.params.id}}}) 
         res.status(200).json(cart)
     } catch (error) {
         res.status(500).json(error)
@@ -53,7 +54,7 @@ router.put('/delete/:id', verifyToken, async (req, res) => {
 //GET USER's CART           //note: every user will obviously have only single cart. That is why, in req.params we are passing user's id and not cart's id.
 router.get('/find/:id', verifyTokenAndAuthorization, async (req, res) => {
     try {
-        const cart = await Cart.findOne({ userId: req.params.id });
+        const cart = await Cart.findOne({ userId: req.params.id });       
         res.status(200).json(cart)
     } catch (error) {
         res.status(500).json(error)

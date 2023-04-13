@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { publicRequest } from "../requestMethods";
+import { userRequest } from "../requestMethods";
 import { mobile } from "../responsive";
 
 const Container = styled.div`
@@ -69,14 +69,14 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       if (password.current.value === confirmPassword.current.value) {
-         await publicRequest.post("/auth/register", {
+         await userRequest.post("/auth/register", {
           username: username.current.value,
           email: email.current.value,
           password: password.current.value,
         });
-        navigate('/')
+        navigate('/login')
       }else{
-        console.log("password doesn't match")
+        console.log("password doesn't match") 
       }
     } catch (error) {
       console.log(error);

@@ -22,39 +22,42 @@ import AdminProductList from './admin/pages/adminProductList/AdminProductList';
 import NewProduct from './admin/pages/newProduct/NewProduct';
 import { useEffect } from 'react';
 import { existingProduct } from './redux/cartRedux';
-import { userRequest } from './requestMethods';
+import { test, userRequest } from './requestMethods';
+import { loginSuccess } from './redux/userRedux';
 
 function App() {
   const dispatch = useDispatch()
   let user = useSelector(state=> state.user.currentUser) 
-  const id = useSelector(state=> state.user.currentUser?._id)
-
+  const id = useSelector(state=> state.user.currentUser?._id) 
+  
   let admin = null
   if(user){
     admin = user.isAdmin
-    user = !user.isAdmin
+    // user = !user.isAdmin 
   } 
 
-  console.log("user is: " + user)
-  console.log("admin is: "+ admin)
+  console.log( "user is: " + user)
+  console.log("admin is: "+ admin)  
 
   useEffect(()=>{
     console.log("first")
     const getCartItems = async ()=>{
-      console.log("second")
-      const res =  await userRequest.get(`/carts/find/${id}`)
+      const currentUser = await userRequest.get('/users/currentuser')
+      dispatch(loginSuccess(currentUser.data))
+      const res =  await userRequest.get(`/carts/find/${id}`)     
       // console.log(res.data) 
       dispatch(existingProduct(res.data))  
     }
-    id && user && getCartItems()
-  }, [id, user]) 
+    getCartItems()
+  }, [id,dispatch])  
+
  
   return ( 
     <Router>
       <Routes>
         <Route exact path="/" element={ <Home /> } />
-        <Route exact path="/register" element={user ? <Navigate to="/" replace={true} /> : <Register />} />
-        <Route exact path="/login" element={user ? <Navigate to="/" replace={true} /> : <Login />} />
+        <Route exact path="/register" element={user ? <Navigate to="/" replace={true} /> : <Register />} /> 
+        <Route exact path="/login" element={ <Login />} />
         <Route exact path="/products/:category" element={<ProductList />} />
         <Route exact path="/product/:id" element={<Product />} />
         <Route exact path="/cart" element={<Cart />} />

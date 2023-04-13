@@ -190,19 +190,19 @@ const Cart = () => {
   const cartItems = useSelector((state) => state.cart);
 
 
-  const [stripeToken, setStripeToken] = useState(null)
+  const [stripeToken, setStripeToken] = useState(null)  
   const navigate = useNavigate()
 
   const onToken = (token)=>{
     setStripeToken(token)
   }
 
-  // console.log(stripeToken)     
+  // console.log(stripeToken)   
 
   useEffect(() => {
     const makeRequest = async () => {
       try { 
-        const res = await userRequest.post("/checkout/payment", { 
+        const res = await userRequest.post("/checkout/payment", {         //all payments are stored here: https://dashboard.stripe.com/test/payments
           // source: stripeToken.id, 
           amount: cartItems.total * 100                         //sending to req.body
         }); 
@@ -212,7 +212,7 @@ const Cart = () => {
         console.log(error)
       }
     }; 
-    stripeToken && cartItems.total>=1 && makeRequest();
+    stripeToken && cartItems.total>=1 && makeRequest();  
   }, [stripeToken, cartItems.total, navigate]);
 
   const handleRemove = async (id)=>{
